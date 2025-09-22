@@ -4,6 +4,8 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { useCart } from '@/context/CartContext';
+import Link from 'next/link';
+
 
 // Tipe data untuk produk dan kategori
 type Product = {
@@ -152,7 +154,8 @@ export default function AllProductsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {products.map((product) => (
-                <div key={product.id} className="product-card bg-gray-800 rounded-md overflow-hidden group">
+                <Link key={product.id} href={`/products/${product.id}`}> {/* Tambahkan Link */}
+                <div className="product-card bg-gray-800 rounded-md overflow-hidden group hover:scale-[1.01] transition-transform cursor-pointer">
                   <div className="overflow-hidden">
                     <img src={product.image} alt={product.name} className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" />
                   </div>
@@ -160,14 +163,15 @@ export default function AllProductsPage() {
                     <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
                     {product.category && <p className="text-sm text-gray-400 mb-2">Category: {product.category.name}</p>}
                     <p className="text-gray-400 mb-4">{formatRupiah(product.price)}</p>
+                  </div>
                     <button
                       className="add-to-cart w-full bg-gray-700 py-2 rounded-md hover:bg-gray-600 transition-colors"
                       onClick={() => handleAddToCart(product)}
                     >
                       Add to Cart
                     </button>
-                  </div>
                 </div>
+              </Link>
               ))}
             </div>
           )}

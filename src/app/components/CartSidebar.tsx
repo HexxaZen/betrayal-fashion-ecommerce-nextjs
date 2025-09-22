@@ -3,6 +3,7 @@
 
 import { X, Trash2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useRouter } from 'next/navigation';
 
 type CartSidebarProps = {
   isOpen: boolean;
@@ -15,7 +16,11 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const formatRupiah = (number: number) => {
     return new Intl.NumberFormat('id-ID').format(number);
   };
-
+  const router = useRouter();
+  const handleCheckout = () => {
+      onClose(); // Tutup sidebar
+      router.push('/order-details'); // Arahkan ke halaman detail pesanan
+    };
   return (
     <div
       className={`cart-sidebar fixed top-0 right-0 h-full w-full md:w-96 bg-gray-900 z-50 overflow-y-auto border-l border-gray-800 transition-transform duration-300 ease-in-out transform ${
@@ -70,16 +75,20 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         
         {cart.length > 0 && (
           <div className="border-t border-gray-800 pt-4 mt-8">
-            <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4">
               <span className="text-gray-400">Subtotal</span>
               <span id="cart-subtotal" className="font-semibold">
-                Rp {formatRupiah(cartTotal)}
+                  {formatRupiah(cartTotal)}
               </span>
-            </div>
-            <button className="w-full bg-white text-gray-900 py-3 rounded-sm font-medium hover:bg-gray-100 transition-colors">
-              Checkout
-            </button>
           </div>
+          <button
+              onClick={handleCheckout} // Panggil handler checkout
+              disabled={cart.length === 0}
+              className="w-full bg-white text-gray-900 py-3 rounded-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+              Checkout
+          </button>
+      </div>
         )}
       </div>
     </div>
