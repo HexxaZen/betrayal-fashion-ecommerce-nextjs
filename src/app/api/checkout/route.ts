@@ -1,24 +1,26 @@
 // src/app/api/checkout/route.ts
-
 import { NextResponse } from 'next/server';
 import midtransClient from 'midtrans-client';
 import { v4 as uuidv4 } from 'uuid';
 
-// Inisialisasi Midtrans Snap
 const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true';
 const serverKey = process.env.MIDTRANS_SERVER_KEY;
 const clientKey = process.env.MIDTRANS_CLIENT_KEY;
 
-// Check if keys are defined, and throw an error if not
-if (!serverKey || !clientKey) {
-  throw new Error('Midtrans server key and client key must be defined in environment variables.');
+// 🔎 Debug log untuk pastikan env terbaca
+console.log("🔑 Midtrans Server Key:", serverKey ? serverKey.slice(0, 10) + "..." : "❌ UNDEFINED");
+console.log("🔑 Midtrans Client Key:", clientKey ? clientKey.slice(0, 10) + "..." : "❌ UNDEFINED");
+console.log("🌍 Midtrans Mode:", isProduction ? "Production" : "Sandbox");
+
+// ❌ Jangan lanjut kalau key tidak ada
+if (!serverKey) {
+  throw new Error('MIDTRANS_SERVER_KEY is not defined in environment variables.');
 }
 
-// Inisialisasi Midtrans Snap
 const snap = new midtransClient.Snap({
-  isProduction: isProduction,
-  serverKey: serverKey, // TypeScript now knows this is a string
-  clientKey: clientKey, // TypeScript now knows this is a string
+  isProduction,
+  serverKey,
+  clientKey: "-", // placeholder (tidak dipakai di backend)
 });
 
 export async function POST(req: Request) {
@@ -33,9 +35,7 @@ export async function POST(req: Request) {
         order_id: orderId,
         gross_amount: grossAmount,
       },
-      credit_card: {
-        secure: true,
-      },
+      credit_card: { secure: true },
       item_details: orderDetails.items.map((item: any) => ({
         id: item.id,
         price: item.price,
@@ -53,18 +53,17 @@ export async function POST(req: Request) {
           postal_code: orderDetails.shippingDetails.postalCode,
         },
       },
-      callbacks: {
-        // opsional: Anda dapat mengimplementasikan callback di sini
-        // finish: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status`
-      }
     };
 
     const transaction = await snap.createTransaction(parameter);
     const transactionToken = transaction.token;
 
     return NextResponse.json({ token: transactionToken, orderId });
-  } catch (error) {
-    console.error('Error creating Midtrans transaction:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  } catch (error: any) {
+    console.error('❌ Error creating Midtrans transaction:', error.ApiResponse || error);
+    return NextResponse.json(
+      { message: 'Error creating Midtrans transaction', error },
+      { status: 500 }
+    );
   }
 }
