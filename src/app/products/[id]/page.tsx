@@ -2,7 +2,6 @@
 
 import { prisma } from '@/lib/prisma';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import ProductDetailClient from '../../components/ProductDetailClient';
 
 // Tipe data untuk props halaman
