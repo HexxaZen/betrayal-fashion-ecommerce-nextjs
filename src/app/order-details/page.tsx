@@ -2,10 +2,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Script from "next/script";
 import Header from "../components/Header";
-import Footer from "../components/Footer"; // Pastikan Anda memiliki Footer
+import Footer from "../components/Footer";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+
+// Tambahkan deklarasi global supaya TypeScript tahu ada snap
+declare global {
+  interface Window {
+    snap: any;
+  }
+}
 
 export default function OrderDetailsPage() {
   const { cart, cartTotal, removeItem } = useCart();
@@ -39,7 +47,6 @@ export default function OrderDetailsPage() {
     setIsSubmitting(true);
     setError(null);
 
-    // Validasi form
     if (Object.values(shippingAddress).some((value) => !value)) {
       setError("Semua kolom harus diisi.");
       setIsSubmitting(false);
@@ -47,9 +54,9 @@ export default function OrderDetailsPage() {
     }
 
     try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           orderDetails: {
             shippingDetails: shippingAddress,
@@ -64,43 +71,31 @@ export default function OrderDetailsPage() {
       }
 
       const data = await response.json();
-      const { token } = data;
 
-      // 🔄 Perbaikan di sini: Tunggu hingga Midtrans Snap siap
-      const isSnapReady = await new Promise<boolean>((resolve) => {
-        const checkInterval = setInterval(() => {
-          if (typeof (window as any).snap !== "undefined") {
-            clearInterval(checkInterval);
-            resolve(true);
-          }
-        }, 100);
-
-        setTimeout(() => {
-          clearInterval(checkInterval);
-          resolve(false);
-        }, 5000); // Batas waktu 5 detik
-      });
-
-      if (isSnapReady) {
-        (window as any).snap.pay(token, {
-          onSuccess: function () {
-            alert("Pembayaran berhasil!");
-            cart.forEach((item) => removeItem(item.id));
-            router.push("/order-confirmation");
-          },
-          onPending: function () {
-            alert("Menunggu pembayaran Anda.");
-          },
-          onError: function () {
-            alert("Pembayaran gagal!");
-          },
-          onClose: function () {
-            alert("Anda menutup pop-up tanpa menyelesaikan pembayaran.");
-          },
-        });
-      } else {
-        alert("Midtrans Snap gagal dimuat. Silakan coba refresh halaman.");
+      if (!window.snap) {
+        throw new Error("Midtrans Snap belum siap, coba refresh halaman.");
       }
+
+      window.snap.pay(data.token, {
+        onSuccess: (result: any) => {
+          alert("Pembayaran berhasil!");
+          // simpan order_id ke localStorage untuk ditampilkan di halaman konfirmasi
+          localStorage.setItem("lastOrderId", result.order_id);
+        
+          cart.forEach((item) => removeItem(item.id));
+          router.push("/order-confirmation");
+        },
+        
+        onPending: () => {
+          alert("Menunggu pembayaran Anda.");
+        },
+        onError: () => {
+          alert("Pembayaran gagal!");
+        },
+        onClose: () => {
+          alert("Anda menutup pop-up tanpa menyelesaikan pembayaran.");
+        },
+      });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -113,11 +108,17 @@ export default function OrderDetailsPage() {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
     }).format(number);
 
   return (
     <>
+      {/* Midtrans Snap.js */}
+      <Script
+        src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+        strategy="afterInteractive"
+      />
+
       <Header />
       <div className="bg-gray-900 text-gray-100 min-h-screen pt-24">
         <div className="container mx-auto px-4 py-8">

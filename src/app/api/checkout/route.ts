@@ -1,16 +1,10 @@
-// src/app/api/checkout/route.ts
 import { NextResponse } from "next/server";
 import midtransClient from "midtrans-client";
 import { v4 as uuidv4 } from "uuid";
 
 const isProduction = process.env.MIDTRANS_IS_PRODUCTION === "true";
-const serverKey = process.env.MIDTRANS_SERVER_KEY_BETRAYAL;
-const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
-
-// Pastikan kunci terdefinisi
-if (!serverKey || !clientKey) {
-  throw new Error('Midtrans server key and client key must be defined in environment variables.');
-}
+const serverKey = process.env.MIDTRANS_SERVER_KEY_BETRAYAL!;
+const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY!;
 
 const snap = new midtransClient.Snap({
   isProduction,
@@ -47,10 +41,14 @@ export async function POST(req: Request) {
       },
     };
 
-    const token = await snap.createTransaction(parameter);
-    return NextResponse.json({ token });
+    const transaction = await snap.createTransaction(parameter);
+
+    return NextResponse.json({
+      token: transaction.token,
+      redirect_url: transaction.redirect_url,
+    });
   } catch (error: any) {
-    console.error('Error creating Midtrans transaction:', error.ApiResponse || error);
+    console.error("Error creating Midtrans transaction:", error.ApiResponse || error);
     return NextResponse.json(
       { message: "Error creating Midtrans transaction" },
       { status: error.httpStatusCode || 500 }
