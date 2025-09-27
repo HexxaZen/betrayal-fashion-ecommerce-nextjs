@@ -44,7 +44,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   return (
     <>
       <Header />
-      <div className="bg-gray-900 text-gray-100 min-h-screen pt-20">
+      <div className=" text-gray-900 min-h-screen pt-20">
         <ProductDetailClient product={product} />
       </div>
     </>

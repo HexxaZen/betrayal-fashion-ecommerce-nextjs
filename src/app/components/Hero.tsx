@@ -4,6 +4,9 @@ import Link from 'next/link';
 import Aos from 'aos';
 import { useEffect } from 'react';
 
+// Ganti dengan tautan gambar latar belakang online Anda yang sebenarnya
+const BACKGROUND_IMAGE_URL = 'https://i.pinimg.com/736x/6e/34/4b/6e344b948e4e4e98e5f1178a9d0ceb72.jpg';
+
 export default function Hero() {
   useEffect(() => {
     Aos.init({
@@ -14,8 +17,14 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        <div id="vanta-bg" className="absolute inset-0 z-0"></div>
+    <section 
+      id="home" 
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-cover bg-center text-white" 
+      style={{ backgroundImage: `url(${BACKGROUND_IMAGE_URL})` }}
+    >
+        {/* Lapisan overlay hitam semi-transparan untuk meningkatkan keterbacaan teks */}
+        <div className="absolute inset-0 z-0 bg-black opacity-40"></div>
+        
         <div className="container mx-auto px-4 z-10 text-center" data-aos="fade-up" data-aos-duration="1000">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">BETRAYAL</h1>
             <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">Redefining luxury fashion with bold designs and uncompromising quality</p>

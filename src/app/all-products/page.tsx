@@ -93,7 +93,7 @@ export default function AllProductsPage() {
       <Header />
       <div className="bg-gray-900 text-gray-100 min-h-screen">
         <div className="container mx-auto px-4 py-20">
-          <h1 className="text-4xl font-bold text-center mb-10">All Products</h1>
+          <h1 className="text-4xl font-bold text-center mb-10 mt-5">All Products</h1>
 
           {/* Filter Section */}
           <div className="flex flex-col md:flex-row gap-6 mb-10">

@@ -36,7 +36,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   };
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto px-4 py-10 bg-gray-200 rounded-3xl backdrop-blur-2xl">
       <div className="grid md:grid-cols-2 gap-10 items-start">
         <div className="md:sticky md:top-20">
           <img
@@ -48,20 +48,20 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         <div className="space-y-6">
           <h1 className="text-4xl font-bold">{product.name}</h1>
           {product.category && (
-            <span className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">
+            <span className="bg-gray-300 text-gray-00 px-3 py-1 rounded-full text-sm">
               {product.category.name}
             </span>
           )}
-          <p className="text-gray-400 text-2xl font-semibold">
+          <p className="text-gray-900 text-2xl font-semibold">
             {formatRupiah(product.price)}
           </p>
-          <p className="text-gray-300 leading-relaxed">{product.description}</p>
+          <p className="text-gray-900 leading-relaxed">{product.description}</p>
           
-          <p className="text-gray-500 text-sm">Stock: {product.stock}</p>
+          <p className="text-gray-900 text-sm">Stock: {product.stock}</p>
 
           <button
             onClick={handleAddToCart}
-            className="w-full bg-white text-gray-900 px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
+            className="w-full bg-white text-gray-900 cursor-pointer px-6 py-3 rounded-full font-medium hover:bg-gray-900 hover:text-white transition-colors"
           >
             Add to Cart
           </button>
