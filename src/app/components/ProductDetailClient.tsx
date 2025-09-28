@@ -36,7 +36,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 bg-gray-200 rounded-3xl backdrop-blur-2xl">
+    <div className="container mx-auto px-4 py-10 bg-gray-300 rounded-3xl backdrop-blur-2xl mt-5">
       <div className="grid md:grid-cols-2 gap-10 items-start">
         <div className="md:sticky md:top-20">
           <img
@@ -61,7 +61,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
           <button
             onClick={handleAddToCart}
-            className="w-full bg-white text-gray-900 cursor-pointer px-6 py-3 rounded-full font-medium hover:bg-gray-900 hover:text-white transition-colors"
+            className="w-full bg-gray-800 text-gray-200 px-6 py-3 rounded-full font-medium hover:bg-gray-200 hover:text-gray-800 hover:ring-3 hover:ring-white hover:ring-offset-2 hover:ring-offset-gray-900 transition-colors cursor-pointer"
           >
             Add to Cart
           </button>

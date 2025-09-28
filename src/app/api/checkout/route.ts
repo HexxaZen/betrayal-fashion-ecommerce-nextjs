@@ -44,8 +44,8 @@ export async function POST(req: Request) {
     const transaction = await snap.createTransaction(parameter);
 
     return NextResponse.json({
-      token: transaction.token,
-      redirect_url: transaction.redirect_url,
+      token: transaction.token,// untuk pop up Snap
+      redirect_url: transaction.redirect_url,// untuk redirect ke halaman Midtrans
     });
   } catch (error: any) {
     console.error("Error creating Midtrans transaction:", error.ApiResponse || error);

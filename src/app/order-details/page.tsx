@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 
-// Tambahkan deklarasi global supaya TypeScript tahu ada snap
+// deklarasi global supaya TypeScript tahu ada snap
 declare global {
   interface Window {
     snap: any;

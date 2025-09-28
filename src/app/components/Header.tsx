@@ -31,7 +31,7 @@ export default function Header() {
         } rounded-full border border-white/20`}
       >
         <div className="container mx-auto py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold tracking-tighter text-white">
+          <Link href="/" className="text-2xl font-bold tracking-tighter text-white cursor-pointer">
             BETRAYAL
           </Link>
           <div className="hidden md:flex space-x-8">
@@ -59,7 +59,7 @@ export default function Header() {
                 <User size={20} />
               </button>
               {isUserDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white/10 rounded-xl backdrop-blur-xl shadow-lg py-1 z-50 border border-white/20">
+                <div className="absolute right-0 mt-2 w-48 bg-white/10 rounded-xl backdrop-blur-2xl shadow-lg py-1 z-50 border border-white/20">
                   <Link href="#" className="block px-4 py-2 hover:bg-white/20 transition-colors text-white">Profile</Link>
                   <Link href="#" className="block px-4 py-2 hover:bg-white/20 transition-colors text-white">Orders</Link>
                   <Link href="#" className="block px-4 py-2 hover:bg-white/20 transition-colors text-white">Logout</Link>

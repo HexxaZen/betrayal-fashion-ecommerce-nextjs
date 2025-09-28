@@ -1,21 +1,14 @@
-// src/app/all-products/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Header from '../components/Header';
 import { useCart } from '@/context/CartContext';
-import Link from 'next/link';
+import ProductCard, {Product} from '../components/ProductCard';
 
+// Konstanta untuk jumlah produk per halaman
+const PRODUCTS_PER_PAGE = 27;
 
-// Tipe data untuk produk dan kategori
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  description: string | null;
-  category: { name: string } | null;
-};
+const BACKGROUND_IMAGE_URL = 'https://i.pinimg.com/1200x/07/e1/85/07e1850cdd6a832d405cffb523d1e89c.jpg';
 
 type Category = {
   id: number;
@@ -28,6 +21,9 @@ export default function AllProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // State untuk pagination
+  const [currentPage, setCurrentPage] = useState(1);
 
   // State untuk filter dan pencarian
   const [search, setSearch] = useState('');
@@ -35,7 +31,12 @@ export default function AllProductsPage() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
-  // Fungsi untuk memuat data produk dari API
+  // Reset halaman ke 1 setiap kali filter berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedCategory, minPrice, maxPrice]);
+
+  // fetch products (diperbaiki agar mereset halaman)
   const fetchProducts = async () => {
     setIsLoading(true);
     setError(null);
@@ -60,11 +61,11 @@ export default function AllProductsPage() {
     }
   };
 
-  // Gunakan useEffect untuk memanggil API setiap kali filter berubah
+  // Debounce dan useEffect untuk memanggil API
   useEffect(() => {
     const debounceFetch = setTimeout(() => {
       fetchProducts();
-    }, 500); // Debounce untuk mencegah terlalu banyak request saat mengetik
+    }, 500);
 
     return () => clearTimeout(debounceFetch);
   }, [search, selectedCategory]);
@@ -75,34 +76,51 @@ export default function AllProductsPage() {
   };
 
   const handleAddToCart = (product: Product) => {
-    addItem(product);
+    addItem(product as any); 
     alert(`${product.name} telah ditambahkan ke keranjang!`);
   };
 
-  const formatRupiah = (number: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(number);
+  // --- LOGIKA PAGINATION ---
+  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+
+  const currentProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    const endIndex = startIndex + PRODUCTS_PER_PAGE;
+    return products.slice(startIndex, endIndex);
+  }, [products, currentPage]);
+  
+  // Fungsi untuk membuat array nomor halaman
+  const getPaginationNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 5; // Tampilkan 5 halaman di tengah
+
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+      return pageNumbers;
+    }
+
+    const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
+    return pageNumbers;
   };
 
   return (
     <>
       <Header />
-      <div className="bg-gray-900 text-gray-100 min-h-screen">
+      <div className="bg-gray-900 text-gray-100 min-h-screen" style={{ backgroundImage: `url('${BACKGROUND_IMAGE_URL}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}> 
         <div className="container mx-auto px-4 py-20">
-          <h1 className="text-4xl font-bold text-center mb-10 mt-5">All Products</h1>
+          <h1 className="text-4xl font-bold text-center mb-10 mt-5">OUR PRODUCTS</h1>
 
-          {/* Filter Section */}
+          {/* Filter Section - TEMA HITAM/ABU-ABU */}
           <div className="flex flex-col md:flex-row gap-6 mb-10">
             {/* Search Input */}
             <div className="flex-1">
               <input
                 type="text"
                 placeholder="Cari produk..."
-                className="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                className="w-full bg-gray-500 border border-gray-700 text-gray-100 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -111,7 +129,7 @@ export default function AllProductsPage() {
             {/* Category Filter */}
             <div className="md:w-1/4">
               <select
-                className="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                className="w-full bg-gray-500 border border-gray-700 text-gray-100 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
@@ -129,18 +147,21 @@ export default function AllProductsPage() {
               <input
                 type="number"
                 placeholder="Min Price"
-                className="w-1/2 bg-gray-800 border border-gray-700 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                className="w-1/2 bg-gray-500 border border-gray-700 text-gray-100 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
               />
               <input
                 type="number"
                 placeholder="Max Price"
-                className="w-1/2 bg-gray-800 border border-gray-700 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                className="w-1/2 bg-gray-500 border border-gray-700 text-gray-100 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
               />
-              <button type="submit" className="bg-gray-700 text-gray-100 px-4 py-3 rounded-md hover:bg-gray-600">
+              <button 
+                type="submit" 
+                className="bg-white cursor-pointer text-gray-900 px-4 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
+              >
                 Filter
               </button>
             </form>
@@ -152,28 +173,53 @@ export default function AllProductsPage() {
           ) : error ? (
             <p className="text-center text-lg text-red-500">{error}</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products.map((product) => (
-                <Link key={product.id} href={`/products/${product.id}`}> {/* Tambahkan Link */}
-                <div className="product-card bg-gray-800 rounded-md overflow-hidden group hover:scale-[1.01] transition-transform cursor-pointer">
-                  <div className="overflow-hidden">
-                    <img src={product.image} alt={product.name} className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-                    {product.category && <p className="text-sm text-gray-400 mb-2">Category: {product.category.name}</p>}
-                    <p className="text-gray-400 mb-4">{formatRupiah(product.price)}</p>
-                  </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {currentProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                    aosDelay={index * 100} 
+                  />
+                ))}
+              </div>
+
+              {/* Komponen Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center space-x-2 mt-10">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 bg-gray-800 text-gray-400 rounded-md disabled:opacity-50 hover:bg-gray-700 transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  {getPaginationNumbers().map(page => (
                     <button
-                      className="add-to-cart w-full bg-gray-700 py-2 rounded-md hover:bg-gray-600 transition-colors"
-                      onClick={() => handleAddToCart(product)}
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                        currentPage === page
+                          ? 'bg-white text-gray-900'
+                          : 'bg-gray-800 text-gray-100 hover:bg-gray-700'
+                      }`}
                     >
-                      Add to Cart
+                      {page}
                     </button>
+                  ))}
+                  
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 bg-gray-800 text-gray-400 rounded-md disabled:opacity-50 hover:bg-gray-700 transition-colors"
+                  >
+                    Next
+                  </button>
                 </div>
-              </Link>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>
