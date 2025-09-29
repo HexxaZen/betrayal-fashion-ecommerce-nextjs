@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react';
 import Aos from 'aos';
 import { useCart } from '@/context/CartContext';
-import ProductCard, { Product } from './ProductCard'; // Mengimpor komponen dan tipe Product
+import ProductCard, { Product } from './ProductCard'; 
 
-// Note: Type Product sudah didefinisikan dan diekspor di ProductCard.tsx
-// Hapus definisi tipe Product di sini untuk menghindari duplikasi
 
 type ShopProps = {
   initialProducts: Product[];
@@ -40,8 +38,8 @@ export default function Shop({ initialProducts }: ShopProps) {
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={handleAddToCart} // Meneruskan fungsi penambahan keranjang sebagai prop
-              aosDelay={index * 100} // Meneruskan delay AOS
+              onAddToCart={handleAddToCart} 
+              aosDelay={index * 100} 
             />
           ))}
         </div>

@@ -80,7 +80,7 @@ export default function AllProductsPage() {
     alert(`${product.name} telah ditambahkan ke keranjang!`);
   };
 
-  // --- LOGIKA PAGINATION ---
+  //  PAGINATION 
   const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
 
   const currentProducts = useMemo(() => {
@@ -89,10 +89,10 @@ export default function AllProductsPage() {
     return products.slice(startIndex, endIndex);
   }, [products, currentPage]);
   
-  // Fungsi untuk membuat array nomor halaman
+  // membuat array nomor halaman
   const getPaginationNumbers = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 5; // Tampilkan 5 halaman di tengah
+    const maxPagesToShow = 5; 
 
     if (totalPages <= maxPagesToShow) {
       for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
@@ -112,8 +112,6 @@ export default function AllProductsPage() {
       <div className="bg-gray-900 text-gray-100 min-h-screen" style={{ backgroundImage: `url('${BACKGROUND_IMAGE_URL}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}> 
         <div className="container mx-auto px-4 py-20">
           <h1 className="text-4xl font-bold text-center mb-10 mt-5">OUR PRODUCTS</h1>
-
-          {/* Filter Section - TEMA HITAM/ABU-ABU */}
           <div className="flex flex-col md:flex-row gap-6 mb-10">
             {/* Search Input */}
             <div className="flex-1">

@@ -4,16 +4,15 @@
 import { useState, useEffect } from "react";
 import Script from "next/script";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 
-// deklarasi global supaya TypeScript tahu ada snap
 declare global {
   interface Window {
     snap: any;
   }
 }
+const BACKGROUND_IMAGE_URL = 'https://i.pinimg.com/1200x/07/e1/85/07e1850cdd6a832d405cffb523d1e89c.jpg';
 
 export default function OrderDetailsPage() {
   const { cart, cartTotal, removeItem } = useCart();
@@ -81,11 +80,11 @@ export default function OrderDetailsPage() {
           alert("Pembayaran berhasil!");
           // simpan order_id ke localStorage untuk ditampilkan di halaman konfirmasi
           localStorage.setItem("lastOrderId", result.order_id);
-        
+
           cart.forEach((item) => removeItem(item.id));
           router.push("/order-confirmation");
         },
-        
+
         onPending: () => {
           alert("Menunggu pembayaran Anda.");
         },
@@ -120,22 +119,30 @@ export default function OrderDetailsPage() {
       />
 
       <Header />
-      <div className="bg-gray-900 text-gray-100 min-h-screen pt-24">
+      <div className="bg-gray-900 text-gray-100 min-h-screen pt-24" style={{ backgroundImage: `url('${BACKGROUND_IMAGE_URL}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-4xl font-bold text-center mb-10">
             Order Details
           </h1>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Order Summary */}
-            <div className="lg:col-span-2 p-6 bg-gray-800 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">
+            <div
+              className="lg:col-span-2 p-6 rounded-xl shadow-2xl"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)', // Latar belakang putih semi-transparan
+                backdropFilter: 'blur(10px)', // Efek blur
+                WebkitBackdropFilter: 'blur(10px)', // Dukungan untuk browser Webkit
+                border: '1px solid rgba(255, 255, 255, 0.3)', // Border semi-transparan
+              }}
+            >
+              <h2 className="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2 text-white">
                 Ringkasan Pesanan
               </h2>
               <ul className="space-y-4">
                 {cart.map((item) => (
                   <li
                     key={item.id}
-                    className="flex justify-between items-center"
+                    className="flex justify-between items-center text-white"
                   >
                     <div className="flex items-center space-x-4">
                       <img
@@ -145,7 +152,7 @@ export default function OrderDetailsPage() {
                       />
                       <div>
                         <h3 className="text-lg font-medium">{item.name}</h3>
-                        <p className="text-gray-400">Jumlah: {item.quantity}</p>
+                        <p className="text-gray-200">Jumlah: {item.quantity}</p>
                       </div>
                     </div>
                     <span className="font-semibold">
@@ -154,27 +161,35 @@ export default function OrderDetailsPage() {
                   </li>
                 ))}
               </ul>
-              <div className="border-t border-gray-700 mt-6 pt-4 flex justify-between items-center">
+              <div className="border-t border-gray-300 mt-6 pt-4 flex justify-between items-center text-white">
                 <span className="text-xl font-bold">Total</span>
-                <span className="text-2xl font-bold text-white">
+                <span className="text-2xl font-bold">
                   {formatRupiah(cartTotal)}
                 </span>
               </div>
             </div>
 
             {/* Shipping Form */}
-            <div className="lg:col-span-1 p-6 bg-gray-800 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">
+            <div
+              className="lg:col-span-1 p-6 rounded-xl shadow-2xl"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)', // Latar belakang putih semi-transparan
+                backdropFilter: 'blur(10px)', // Efek blur
+                WebkitBackdropFilter: 'blur(10px)', // Dukungan untuk browser Webkit
+                border: '1px solid rgba(255, 255, 255, 0.3)', // Border semi-transparan
+              }}
+            >
+              <h2 className="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2 text-white">
                 Detail Pengiriman
               </h2>
-              {error && <p className="text-red-500 mb-4">{error}</p>}
+              {error && <p className="text-red-300 mb-4">{error}</p>}
               <form onSubmit={handlePayment} className="space-y-4">
                 {["name", "email", "phone", "address", "city", "postalCode"].map(
                   (field) => (
                     <div key={field}>
                       <label
                         htmlFor={field}
-                        className="block text-gray-400 mb-1 capitalize"
+                        className="block text-gray-200 mb-1 capitalize"
                       >
                         {field === "postalCode" ? "Kode Pos" : field}
                       </label>
@@ -184,7 +199,7 @@ export default function OrderDetailsPage() {
                         name={field}
                         value={(shippingAddress as any)[field]}
                         onChange={handleInputChange}
-                        className="w-full bg-gray-700 text-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
+                        className="w-full bg-white bg-opacity-10 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 placeholder-gray-400" // Input field diubah agar sesuai
                       />
                     </div>
                   )
@@ -192,7 +207,7 @@ export default function OrderDetailsPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full cursor-pointer bg-white text-gray-900 px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full cursor-pointer bg-gray-800 text-white px-6 py-3 rounded-md font-medium hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "Memproses..." : "Lanjutkan Pembayaran"}
                 </button>
@@ -201,7 +216,6 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
