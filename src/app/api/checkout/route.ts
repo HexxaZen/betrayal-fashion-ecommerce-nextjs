@@ -39,6 +39,11 @@ export async function POST(req: Request) {
         email: orderDetails.shippingDetails?.email,
         phone: orderDetails.shippingDetails?.phone,
       },
+      callbacks: {
+        finish: isProduction
+          ? "https://yourdomain.com/order-confirmation" // domain produksi
+          : "http://localhost:3000/order-confirmation", // saat development
+      },
     };
 
     const transaction = await snap.createTransaction(parameter);

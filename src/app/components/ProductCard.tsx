@@ -27,10 +27,10 @@ export default function ProductCard({ product, onAddToCart, aosDelay }: ProductC
 
     // Glassmorphism
     const glassMorphismStyle = {
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // Latar belakang putih semi-transparan (15% opacity)
-        backdropFilter: 'blur(8px)',               // Efek blur pada latar belakang
-        WebkitBackdropFilter: 'blur(8px)',         // Dukungan untuk browser Webkit
-        border: '1px solid rgba(255, 255, 255, 0.2)', // Border semi-transparan
+        backgroundColor: 'rgba(255, 255, 255, 0.15)', 
+        backdropFilter: 'blur(8px)',               
+        WebkitBackdropFilter: 'blur(8px)',         
+        border: '1px solid rgba(255, 255, 255, 0.2)', 
     };
 
     return (

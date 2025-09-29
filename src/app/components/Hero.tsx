@@ -5,7 +5,7 @@ import Aos from 'aos';
 import { useEffect } from 'react';
 
 // Ganti dengan tautan gambar latar belakang online Anda yang sebenarnya
-const BACKGROUND_IMAGE_URL = 'https://i.pinimg.com/736x/6e/34/4b/6e344b948e4e4e98e5f1178a9d0ceb72.jpg';
+const BACKGROUND_IMAGE_URL = 'https://i.pinimg.com/1200x/6e/d9/54/6ed954149cbd5c6a86c6dac3ad40202e.jpg';
 
 export default function Hero() {
   useEffect(() => {

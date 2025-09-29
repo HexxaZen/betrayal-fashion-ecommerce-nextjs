@@ -80,7 +80,15 @@ export default function OrderDetailsPage() {
           alert("Pembayaran berhasil!");
           // simpan order_id ke localStorage untuk ditampilkan di halaman konfirmasi
           localStorage.setItem("lastOrderId", result.order_id);
-
+          // Simpan juga data order agar bisa ditampilkan di order-confirmation
+          localStorage.setItem(
+            "lastOrderData",
+            JSON.stringify({
+              shipping: shippingAddress,
+              items: cart,
+              total: cartTotal,
+            })
+          );
           cart.forEach((item) => removeItem(item.id));
           router.push("/order-confirmation");
         },

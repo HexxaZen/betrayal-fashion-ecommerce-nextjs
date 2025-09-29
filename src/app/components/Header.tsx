@@ -59,10 +59,10 @@ export default function Header() {
                 <User size={20} />
               </button>
               {isUserDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white/10 rounded-xl backdrop-blur-2xl shadow-lg py-1 z-50 border border-white/20">
-                  <Link href="#" className="block px-4 py-2 hover:bg-white/20 transition-colors text-white">Profile</Link>
-                  <Link href="#" className="block px-4 py-2 hover:bg-white/20 transition-colors text-white">Orders</Link>
-                  <Link href="#" className="block px-4 py-2 hover:bg-white/20 transition-colors text-white">Logout</Link>
+                <div className="absolute right-0 mt-2 w-48 bg-white/80 rounded-xl shadow-lg py-1 z-50 border border-white/20">
+                  <Link href="/profile" className="block px-4 py-2 hover:bg-white transition-colors text-black">Profile</Link>
+                  <Link href="#" className="block px-4 py-2 hover:bg-white transition-colors text-black">Orders</Link>
+                  <Link href="#" className="block px-4 py-2 hover:bg-white transition-colors text-black">Logout</Link>
                 </div>
               )}
             </div>
